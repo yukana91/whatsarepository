@@ -1,0 +1,107 @@
+mport java.util.Arrays;
+import java.util.Scanner;
+public class Main {
+
+    //declared variables
+    private static String guess;
+    private static final String[] wordList = {"hello", "games", "super", "whose", "fruit", "motor", "dress" , "rival" , "baker" , "south" , "catch" , "roman" , "union" , "serve" , "dealt" , "spent" , "sport" , "noise" , "coast" , "smoke" , "began" , "brown" , "joint" , "great" , "early" , "fluid" , "media" , "cycle" , "faith"};
+    private static final String word = wordList[(int) (Math.random() * wordList.length)];
+    private static String[] temp = {"?", "?", "?", "?", "?"};
+    private static boolean check = false;
+    private static int counter;
+
+
+    static Scanner scan = new Scanner(System.in);
+
+    //prints starting wordle visual, executes methods to check if the guessed letters are good or not, called once
+    public static void tempStart() {
+        counter++;
+        for (String s : temp) {
+            System.out.print(s + " ");
+        }
+        System.out.println("");
+        guess = scan.nextLine();
+        halfCorrect(); //checks for half correct letters
+        correct(); //checks for full correct letters
+    }
+
+    public static void start() { //this method is called multiple times
+        if (counter >= 5) {
+            System.exit(007);
+        }
+        System.out.println("");
+        guess = scan.nextLine();
+        counter++;
+        halfCorrect(); //checks for half correct letters
+        correct(); //checks for full correct letters
+
+
+    }
+
+    public static void halfCorrect() { //checks if any letters in the guessed word and actual word are the same
+        for (int i = 0; i < 5; i++) {
+            for (int j = 0; j < 5; j++) {
+                if (guess.substring(i, i + 1).equals(word.substring(j, j + 1))) {
+                    temp[i] = "Y";
+                    check = true;
+                }
+            }
+        }
+        if (!check) { //this boolean is to make sure only 1 print happens
+            for (String s : temp) {
+                System.out.print(s + " ");
+
+            }
+            //resets the wordle (in the code not for the user to see)
+            // every guess to get around bugs
+            Arrays.fill(temp, "?");
+        }
+    }
+
+    public static void correct() {
+        for (int i = 0; i < 5; i++) {
+            if (guess.substring(i, (i + 1)).equals(word.substring(i, i + 1))) {
+                temp[i] = "G";
+            }
+        }
+        for (String s : temp) {
+            System.out.print(s + " ");
+        }
+        winCheck();
+        //resets the wordle (in the code not for the user to see)
+        // every guess to get around bugs
+        Arrays.fill(temp, "?");
+        start();
+    }
+
+    public static void rules(){
+        System.out.println("? -> Gray: letter doesn't exist in the word\nY -> Yellow: exists in the word but in a different place\nG -> Green: correct letter and placement");
+        if (scan.nextLine().equals("/start")) {
+            tempStart();
+        }
+    }
+
+    public static void winCheck() {
+        int counter = 0;
+        for (int i = 0; i < temp.length; i++) {
+            if (temp[i].equals("G")) {
+                counter++;
+            }
+        }
+        if (counter == 5) {
+            System.out.println("\nYou win");
+            System.exit(1337);
+        }
+
+    }
+
+        public static void main (String[]args){
+            System.out.println("/start \n/rules");
+            String decision = scan.nextLine();
+            switch (decision) {
+                case "/start" -> tempStart();
+                case "/rules" -> rules();
+            }
+
+        }
+    }
